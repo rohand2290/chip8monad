@@ -1,8 +1,9 @@
 module Main where
 import qualified Data.ByteString as BS
-import Data.Word
 import Data.List.Index (setAt)
 import System.Environment
+import Control.Monad (replicateM_)
+import Control.Monad.State (execState)
 import Graphics.Gloss hiding (display)
 import Graphics.Gloss.Interface.Pure.Game hiding (display)
 import Cpu
@@ -46,7 +47,7 @@ cyclesPerFrame :: Int
 cyclesPerFrame = 10
 
 step :: Float -> CPU -> CPU
-step _ cpu = tickTimers $ (!! cyclesPerFrame) $ iterate Cpu.cycle cpu
+step _ = execState $ replicateM_ cyclesPerFrame Cpu.cycle >> tickTimers
 
 main :: IO ()
 main = do
